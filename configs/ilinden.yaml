@@ -1,0 +1,13 @@
+# Default configuration template for Ilinden proxy
+#
+# Contains all configurable parameters with reasonable defaults
+# and extensive documentation for each option
+#
+# Categories include:
+# - Server settings (ports, timeouts)
+# - Origin server configuration
+# - JWT validation settings
+# - Caching parameters
+# - Redis connection (optional)
+# - Logging configuration
+# - Metrics settings

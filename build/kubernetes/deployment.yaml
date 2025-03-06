@@ -1,0 +1,9 @@
+# Kubernetes deployment configuration
+#
+# Defines deployment strategy:
+# - Replica count
+# - Resource requests/limits
+# - Health checks
+# - Volume mounts
+# - Security context
+# - Update strategy
