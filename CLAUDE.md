@@ -1,6 +1,43 @@
-# Ilinden Proxy Server Architecture
+# Ilinden Development Guide
 
-Ilinden is a specialized high-performance HTTP proxy server designed for HLS (HTTP Live Streaming) content delivery with JWT token propagation. Its primary purpose is to intercept playlist requests, inject JWT authentication tokens into URLs, and rewrite responses while maintaining exceptional performance characteristics.
+## Build & Run Commands
+```bash
+go build -o bin/ilinden ./cmd/ilinden
+go run ./cmd/ilinden
+
+# Testing
+go test ./...                      # Run all tests
+go test ./internal/cache/...       # Test specific package
+go test -run TestName ./internal/  # Run specific test
+
+# Linting & Code Check
+go vet ./...                       # Run static analysis
+gofmt -s -w .                      # Format code (or use goimports)
+go mod tidy                        # Clean up dependencies
+```
+
+## Code Style Guidelines
+- **Imports**: Group standard library first, then external, then internal
+- **Formatting**: Follow Go standard formatting (gofmt)
+- **Error Handling**: Always check errors, provide context with wrapped errors
+- **Documentation**: All exported functions and packages must have comments
+- **Naming**: 
+  - CamelCase (not snake_case)
+  - Short, descriptive variable names
+  - Acronyms uppercase (HTTP, URL)
+- **Package Structure**: Follow standard Go project layout
+- **Tests**: Use table-driven tests, aim for >80% coverage
+
+## Architecture
+Ilinden is a high-performance HTTP proxy for HLS streaming with JWT token propagation. 
+See detailed architecture in `docs/architecture.md`.
+
+Key components:
+- HTTP proxy with HLS playlist processing
+- JWT token extraction and injection
+- Memory-efficient caching system
+- Optional Redis-based player tracking
+- Prometheus metrics and structured logging
 
 ## Core Purpose
 
@@ -72,8 +109,8 @@ The server proxies HTTP calls for HLS (variant) playlists and chunklists from me
 3. Request is forwarded to origin server
 4. Origin returns playlist content
 5. Proxy parses playlist and modifies URLs:
-    - For master playlists: URLs point back to proxy with JWT tokens
-    - For media playlists: Segment URLs point directly to origin with JWT tokens
+  - For master playlists: URLs point back to proxy with JWT tokens
+  - For media playlists: Segment URLs point directly to origin with JWT tokens
 6. Modified playlist is returned to player
 7. For media segments, player requests content directly from origin with JWT
 
@@ -122,20 +159,20 @@ The project follows a clean architecture with separation of concerns:
 - `cmd/`: Application entry points
 - `configs/`: Configuration templates and examples
 - `internal/`: Internal packages not meant for external use
-    - `config/`: Configuration parsing and validation
-    - `server/`: HTTP server implementation
-    - `proxy/`: Core proxy functionality
-    - `playlist/`: HLS playlist handling
-    - `jwt/`: JWT processing
-    - `cache/`: Caching system
-    - `middleware/`: HTTP middleware components
-    - `redis/`: Redis client and tracking
-    - `telemetry/`: Metrics, logging, and tracing
-    - `api/`: Management API endpoints
-    - `utils/`: Common utilities
+  - `config/`: Configuration parsing and validation
+  - `server/`: HTTP server implementation
+  - `proxy/`: Core proxy functionality
+  - `playlist/`: HLS playlist handling
+  - `jwt/`: JWT processing
+  - `cache/`: Caching system
+  - `middleware/`: HTTP middleware components
+  - `redis/`: Redis client and tracking
+  - `telemetry/`: Metrics, logging, and tracing
+  - `api/`: Management API endpoints
+  - `utils/`: Common utilities
 - `pkg/`: Public packages that could be used by other applications
-    - `hls/`: HLS protocol handling
-    - `jwtheader/`: JWT extraction utilities
+  - `hls/`: HLS protocol handling
+  - `jwtheader/`: JWT extraction utilities
 - `build/`: Build and deployment configurations
 - `scripts/`: Utility scripts
 - `docs/`: Documentation

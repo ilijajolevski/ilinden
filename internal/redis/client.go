@@ -5,3 +5,4 @@
 // - Command execution
 // - Error handling
 // - Reconnect logic
+package redis

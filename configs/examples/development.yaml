@@ -1,0 +1,76 @@
+# Development configuration for Ilinden Proxy
+server:
+  host: "127.0.0.1"
+  port: 8080
+  readTimeout: "5s"
+  writeTimeout: "10s"
+  idleTimeout: "120s"
+  shutdownTimeout: "10s"
+  maxRequestBodyMB: 5
+  enableCompression: true
+
+origin:
+  timeout: "5s"
+  maxIdleConns: 100
+  maxIdleConnsPerHost: 10
+  maxConnsPerHost: 50
+  idleConnTimeout: "90s"
+  defaultScheme: "https"
+  # For development, you might want to set this to your local test server
+  baseURL: "http://localhost:9000"
+  retryCount: 2
+  circuitBreaker: true
+
+jwt:
+  enabled: true
+  paramName: "token"
+  headerName: "Authorization"
+  # For development use only
+  secret: "development-secret-key-do-not-use-in-production"
+  # Required claims for token validation
+  requiredClaims: ["sub", "exp"]
+  # Optional for testing with custom claim namespaces
+  claimsNamespace: "https://ilinden.example.com/"
+  allowedAlgs: ["HS256", "RS256"]
+
+cache:
+  enabled: true
+  ttlMaster: "10s"
+  ttlMedia: "2s"
+  maxSize: 1000
+  shardCount: 8
+  staleWhileRevalidate: true
+  useRedis: false
+
+redis:
+  enabled: false
+  addresses: ["localhost:6379"]
+  password: ""
+  db: 0
+  poolSize: 5
+  minIdleConns: 2
+  dialTimeout: "5s"
+  readTimeout: "3s"
+  writeTimeout: "3s"
+  poolTimeout: "4s"
+  trackingPrefix: "ilinden:player:"
+  trackingExpiry: "5m"
+
+log:
+  level: "debug"  # debug, info, warn, error
+  format: "console"  # console, json
+  outputPath: "stdout"
+  errorPath: "stderr"
+  development: true
+
+metrics:
+  enabled: true
+  address: ":9090"
+  path: "/metrics"
+  collectSystem: true
+
+tracing:
+  enabled: false
+  serviceName: "ilinden-dev"
+  endpoint: "localhost:4317"
+  sampleRate: 0.5

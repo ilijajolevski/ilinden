@@ -5,3 +5,4 @@
 // - Circuit breaking
 // - Health status reporting
 // - Auto-recovery
+package redis

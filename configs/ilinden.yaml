@@ -1,13 +1,78 @@
-# Default configuration template for Ilinden proxy
-#
-# Contains all configurable parameters with reasonable defaults
-# and extensive documentation for each option
-#
-# Categories include:
-# - Server settings (ports, timeouts)
-# - Origin server configuration
-# - JWT validation settings
-# - Caching parameters
-# - Redis connection (optional)
-# - Logging configuration
-# - Metrics settings
+# Default configuration for Ilinden Proxy
+# This file will be used when no specific config file is provided
+# Environment variables with the ILINDEN_ prefix can override these settings
+
+server:
+  host: "0.0.0.0"
+  port: 8080
+  readTimeout: "5s"
+  writeTimeout: "10s"
+  idleTimeout: "120s"
+  shutdownTimeout: "10s"
+  maxRequestBodyMB: 10
+  enableCompression: true
+
+origin:
+  timeout: "5s"
+  maxIdleConns: 100
+  maxIdleConnsPerHost: 10
+  maxConnsPerHost: 100
+  idleConnTimeout: "90s"
+  defaultScheme: "https"
+  # This should be configured for your specific origin
+  baseURL: ""
+  retryCount: 3
+  retryWaitMin: "100ms"
+  retryWaitMax: "2s"
+  circuitBreaker: true
+
+jwt:
+  enabled: true
+  paramName: "token"
+  headerName: "Authorization"
+  # This should be configured via environment variable or config override
+  secret: ""
+  keysUrl: ""
+  requiredClaims: ["sub", "exp"]
+
+cache:
+  enabled: true
+  ttlMaster: "10s"
+  ttlMedia: "2s"
+  maxSize: 10000
+  shardCount: 16
+  staleWhileRevalidate: true
+  useRedis: false
+
+redis:
+  enabled: false
+  addresses: ["localhost:6379"]
+  password: ""
+  db: 0
+  poolSize: 10
+  minIdleConns: 5
+  dialTimeout: "5s"
+  readTimeout: "3s"
+  writeTimeout: "3s"
+  poolTimeout: "4s"
+  trackingPrefix: "ilinden:player:"
+  trackingExpiry: "5m"
+
+log:
+  level: "info"
+  format: "json"
+  outputPath: "stdout"
+  errorPath: "stderr"
+  development: false
+
+metrics:
+  enabled: true
+  address: ":9090"
+  path: "/metrics"
+  collectSystem: true
+
+tracing:
+  enabled: false
+  serviceName: "ilinden"
+  endpoint: "localhost:4317"
+  sampleRate: 0.1

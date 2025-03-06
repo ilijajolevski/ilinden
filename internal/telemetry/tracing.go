@@ -5,3 +5,5 @@
 // - Context propagation
 // - Trace sampling
 // - Span attributes
+// - Span events
+package telemetry

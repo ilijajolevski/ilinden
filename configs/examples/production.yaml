@@ -1,0 +1,89 @@
+# Production configuration for Ilinden Proxy
+server:
+  host: "0.0.0.0"
+  port: 8080
+  readTimeout: "5s"
+  writeTimeout: "10s"
+  idleTimeout: "120s"
+  shutdownTimeout: "30s"
+  maxRequestBodyMB: 10
+  enableCompression: true
+  trustedProxies:
+    - "10.0.0.0/8"
+    - "172.16.0.0/12"
+    - "192.168.0.0/16"
+
+origin:
+  timeout: "5s"
+  maxIdleConns: 500
+  maxIdleConnsPerHost: 100
+  maxConnsPerHost: 500
+  idleConnTimeout: "90s"
+  defaultScheme: "https"
+  baseURL: "https://origin.example.com"
+  retryCount: 3
+  retryWaitMin: "100ms"
+  retryWaitMax: "2s"
+  circuitBreaker: true
+
+jwt:
+  enabled: true
+  paramName: "token"
+  headerName: "Authorization"
+  # In production, this should be set via environment variable ILINDEN_JWT_SECRET
+  secret: ""
+  # Alternatively, use JWKS URL
+  keysUrl: "https://auth.example.com/.well-known/jwks.json"
+  requiredClaims: ["sub", "exp"]
+  claimsNamespace: "https://ilinden.example.com/"
+  issuer: "https://auth.example.com/"
+  audience: "https://api.example.com/"
+  allowedAlgs: ["RS256"]
+
+cache:
+  enabled: true
+  ttlMaster: "10s"
+  ttlMedia: "2s"
+  maxSize: 100000
+  shardCount: 32
+  staleWhileRevalidate: true
+  useRedis: true
+
+redis:
+  enabled: true
+  addresses:
+    - "redis-0.redis.svc.cluster.local:6379"
+    - "redis-1.redis.svc.cluster.local:6379"
+    - "redis-2.redis.svc.cluster.local:6379"
+  # Password should be set via environment variable ILINDEN_REDIS_PASSWORD
+  password: ""
+  db: 0
+  poolSize: 50
+  minIdleConns: 10
+  dialTimeout: "5s"
+  readTimeout: "3s"
+  writeTimeout: "3s"
+  poolTimeout: "4s"
+  idleTimeout: "5m"
+  maxConnAge: "30m"
+  trackingPrefix: "ilinden:player:"
+  trackingExpiry: "5m"
+
+log:
+  level: "info"  # debug, info, warn, error
+  format: "json"
+  outputPath: "stdout"
+  errorPath: "stderr"
+  development: false
+
+metrics:
+  enabled: true
+  address: ":9090"
+  path: "/metrics"
+  collectSystem: true
+
+tracing:
+  enabled: true
+  serviceName: "ilinden"
+  endpoint: "otel-collector.monitoring.svc.cluster.local:4317"
+  sampleRate: 0.1
